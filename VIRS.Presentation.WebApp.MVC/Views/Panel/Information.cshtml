@@ -1,0 +1,139 @@
+﻿@using VIRS.Domain.Core.InspectionRequestAgg.DTOs
+@using VIRS.Domain.Core.InspectionRequestAgg.Enums
+@{
+    var receipt = ViewData["RequestsInfo"] as InspectionRequestInfoDTO;
+    string ConvertToPersianNumbers(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        var persianDigits = new[] { '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' };
+        return string.Concat(input.Select(c => char.IsDigit(c) ? persianDigits[c - '0'] : c));
+    }
+    Layout = "_Layout";
+}
+<body style="background: #f5f7fa; padding: 0;">
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <div class="admin-logo">
+            <div>پنل مدیریت VIRS</div>
+        </div>
+        <div class="admin-user">
+            <div>
+                <div style="font-weight: bold;">@ViewData["FullName"]</div>
+            </div>
+            <a asp-controller="Panel" asp-action="Logout">
+                <button class="btn-logout">خروج</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 30px;">
+        <!-- Back Button -->
+        <div style="margin-bottom: 20px;">
+            <a asp-controller="Panel"
+               asp-action="index"
+               style="text-decoration: none; color: #7f8c8d; display: inline-flex; align-items: center; gap: 5px;">
+                ← بازگشت به لیست درخواست‌ها
+            </a>
+        </div>
+
+        <!-- Receipt Card -->
+        <div class="receipt-card">
+            <div class="receipt-header">
+                <div class="receipt-number">شماره پیگیری رزرو</div>
+                <div class="tracking-code">@receipt.TrackingNumber</div>
+            </div>
+
+            <!-- Appointment DateTime -->
+            <div class="appointment-box">
+                <div class="label">تاریخ و زمان مراجعه</div>
+                <div class="datetime">@ConvertToPersianNumbers(receipt.ShamsiInspectionDate)</div>
+            </div>
+
+            <!-- Personal Info -->
+            <div class="info-section">
+                <div class="section-title-receipt">اطلاعات شخصی</div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">نام و نام خانوادگی</div>
+                        <div class="info-value">@receipt.FullName</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">کد ملی</div>
+                        <div class="info-value">@ConvertToPersianNumbers(receipt.CarOwnerNID)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">شماره تماس</div>
+                        <div class="info-value">@ConvertToPersianNumbers(receipt.PhoneNumber)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Info -->
+            <div class="info-section">
+                <div class="section-title-receipt">اطلاعات خودرو</div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">پلاک خودرو</div>
+                        <div class="info-value">@ConvertToPersianNumbers(receipt.CarPlat)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">مدل خودرو</div>
+                        <div class="info-value">@receipt.CarModel</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">سال تولید</div>
+                        <div class="info-value">@ConvertToPersianNumbers(receipt.CarManufactureYear.ToString())</div>
+                    </div>
+                </div>
+                <div class="info-grid" style="margin-top: 15px;">
+                    <div class="info-item" style="grid-column: span 3;">
+                        <div class="info-label">کد VIN</div>
+                        <div class="info-value">NAS421000P7123456</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Images Section -->
+            <div class="info-section">
+                <div class="section-title-receipt">تصاویر خودرو</div>
+                <div class="image-gallery">
+                    @foreach (var imgPath in receipt.ImagesPaths)
+                    {
+                        <div class="image-item">
+                            <div class="image-placeholder">
+                                <img src="@imgPath" style="width: 100%; height: 100%; object-fit: contain;" alt="تصویر" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-container" style="margin-top: 30px;">
+            <a asp-controller="Panel" asp-action="index" class="btn-back" style="text-decoration: none; border-radius: 10px; display: inline-block;">→ بازگشت</a>
+            @if (receipt.Status == InspectionStatusEnum.Pending)
+            {
+                <a asp-controller="Panel"
+                   asp-action="Rejected"
+                   asp-route-id="@receipt.TrackingNumber"
+                   class="btn-reject"
+                   style="padding: 14px 35px; font-size: 16px; border; border-radius: 10px; text-decoration: none"">
+                    ✗ رد درخواست
+                </a>
+                <a asp-controller="Panel"
+                   asp-action="Approved"
+                   asp-route-id="@receipt.TrackingNumber"
+                   class="btn-reserve"
+                   style="flex: 1;
+                          padding: 14px 35px;
+                          font-size: 16px;
+                          text-align:center;
+                          border-radius: 10px;
+                          text-decoration: none">
+                    ✓ تأیید درخواست
+                </a>
+            }
+        </div>
+    </div>
+</body>

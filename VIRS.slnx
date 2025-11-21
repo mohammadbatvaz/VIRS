@@ -1,3 +1,23 @@
 <Solution>
   <Folder Name="/src/" />
+  <Folder Name="/src/1_Domain/" />
+  <Folder Name="/src/1_Domain/Core/">
+    <Project Path="VIRS.Domain.Core/VIRS.Domain.Core.csproj" Id="12ee8e0e-9b53-4e22-b1ba-3d4d50dc4f28" />
+  </Folder>
+  <Folder Name="/src/1_Domain/Services/">
+    <Project Path="VIRS.Domain.AppServices/VIRS.Domain.AppServices.csproj" Id="55ede3e8-cfa7-4ffd-91c6-d26e5854533a" />
+    <Project Path="VIRS.Domain.Services/VIRS.Domain.Services.csproj" Id="d6a062e9-4aa4-4422-8837-4bbc9f97e048" />
+  </Folder>
+  <Folder Name="/src/2_Infrastructure/" />
+  <Folder Name="/src/2_Infrastructure/DataAccess/">
+    <Project Path="VIRS.Infra.DataAccess.EFCore/VIRS.Infra.DataAccess.EFCore.csproj" Id="0fc3ec69-d4ba-4579-a634-fac3f6a4706c" />
+    <Project Path="VIRS.Infra.DataAccess.Storage/VIRS.Infra.DataAccess.Storage.csproj" Id="6fca29a4-d99c-435c-bb6d-b0e22fe12dd9" />
+  </Folder>
+  <Folder Name="/src/2_Infrastructure/Database/">
+    <Project Path="VIRS.Infra.DataBase.EFCoreSqlServer/VIRS.Infra.DataBase.EFCoreSqlServer.csproj" Id="08835665-c627-4c27-a855-07333ccd9223" />
+  </Folder>
+  <Folder Name="/src/2_Infrastructure/Provider/" />
+  <Folder Name="/src/3_Presentation/">
+    <Project Path="VIRS.Presentation.WebApp.MVC/VIRS.Presentation.WebApp.MVC.csproj" Id="4f147945-4c07-4770-871e-ee759c0fd531" />
+  </Folder>
 </Solution>

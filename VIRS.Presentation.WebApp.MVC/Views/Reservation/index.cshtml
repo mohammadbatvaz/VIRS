@@ -1,0 +1,276 @@
+﻿@using VIRS.Domain.Core.Calendar.DTOs
+@using VIRS.Domain.Core.CarModelAgg.DTOs
+@model VIRS.Presentation.WebApp.MVC.Models.IRInformationVM;
+@{
+    Layout = "_Layout";
+
+    string ConvertToPersianNumbers(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        var persianDigits = new[] { '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' };
+        return string.Concat(input.Select(c => char.IsDigit(c) ? persianDigits[c - '0'] : c));
+    }
+}
+<body>
+<div class="container">
+<div class="header">
+    <div class="logo">رزرو نوبت معاینه فنی</div>
+    <div class="subtitle">سامانه VIRS</div>
+</div>
+    <form asp-controller="Reservation" asp-action="index" method="post" enctype="multipart/form-data">
+    <div class="form-section">
+        <h2 class="section-title">اطلاعات شخصی</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="NID">شماره ملی *</label>
+                <input asp-for="NID" type="text" placeholder="مثال: 0012345678" maxlength="10" required>
+                <span asp-validation-for="NID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName">نام *</label>
+                <input asp-for="FirstName" type="text" placeholder="نام خود را وارد کنید" required>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="LastName">نام خانوادگی *</label>
+                <input asp-for="LastName" type="text" placeholder="نام خانوادگی خود را وارد کنید" required>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber">شماره تماس *</label>
+                <input asp-for="PhoneNumber" type="tel" placeholder="مثال: 09123456789" maxlength="11" required>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h2 class="section-title">مشخصات خودرو</h2>
+        <div class="plate-container">
+            <div class="plate-iran">
+                <span>I.R.</span>
+                <span>IRAN</span>
+            </div>
+
+            <div class="plate-section">
+                <label asp-for="CarPlatProvinceCode">کد شهر</label>
+                <input asp-for="CarPlatProvinceCode" type="number" class="plate-input last" min="10" max="99"
+                    placeholder="12" required>
+            </div>
+
+            <div class="plate-divider"></div>
+
+            <div class="plate-section">
+                <label asp-for="CarPlatSecondPart">عدد دوم</label>
+                <input asp-for="CarPlatSecondPart" type="number" class="plate-input" min="111" max="999"
+                    placeholder="345" required>
+            </div>
+
+            <div class="plate-section">
+                <label asp-for="CarPlatLetter">حرف</label>
+                <select asp-for="CarPlatLetter" class="plate-select" required>
+                    <option value="">-</option>
+                    <option value="الف">الف</option>
+                    <option value="ب">ب</option>
+                    <option value="پ">پ</option>
+                    <option value="ت">ت</option>
+                    <option value="ث">ث</option>
+                    <option value="ج">ج</option>
+                    <option value="چ">چ</option>
+                    <option value="ح">ح</option>
+                    <option value="خ">خ</option>
+                    <option value="د">د</option>
+                    <option value="ذ">ذ</option>
+                    <option value="ر">ر</option>
+                    <option value="ز">ز</option>
+                    <option value="ژ">ژ</option>
+                    <option value="س">س</option>
+                    <option value="ش">ش</option>
+                    <option value="ص">ص</option>
+                    <option value="ض">ض</option>
+                    <option value="ط">ط</option>
+                    <option value="ظ">ظ</option>
+                    <option value="ع">ع</option>
+                    <option value="غ">غ</option>
+                    <option value="ف">ف</option>
+                    <option value="ق">ق</option>
+                    <option value="ک">ک</option>
+                    <option value="گ">گ</option>
+                    <option value="ل">ل</option>
+                    <option value="م">م</option>
+                    <option value="ن">ن</option>
+                    <option value="و">و</option>
+                    <option value="ه">ه</option>
+                    <option value="ی">ی</option>
+                </select>
+            </div>
+
+            <div class="plate-section">
+                <label asp-for="CarPlatFirstPart">عدد اول</label>
+                <input asp-for="CarPlatFirstPart" type="number" class="plate-input" min="11" max="99" placeholder="12"
+                    required>
+            </div>
+        </div>
+        <span asp-validation-for="CarPlatFirstPart" class="text-danger"></span>
+        <span asp-validation-for="CarPlatLetter" class="text-danger"></span>
+        <span asp-validation-for="CarPlatSecondPart" class="text-danger"></span>
+        <span asp-validation-for="CarPlatProvinceCode" class="text-danger"></span>
+    </div>
+
+    <div class="form-section">
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="CarVIN">کد VIN خودرو *</label>
+                <input asp-for="CarVIN" type="text" placeholder="کد 17 رقمی VIN" minlength="17" maxlength="17" required>
+                <span asp-validation-for="CarVIN" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CarManufactureYear">سال تولید *</label>
+                <input asp-for="CarManufactureYear" type="number" placeholder="مثال: 1402" min="1350" maz="1450"
+                    required>
+                <span asp-validation-for="CarManufactureYear" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+<div class="form-section">
+    <div class="car-selection-row">
+        <div class="form-group">
+            <label for="manufacturer">کارخانه سازنده *</label>
+            <select id="manufacturer" class="form-control">
+                <option value="">انتخاب کارخانه...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="family">خانواده خودرو *</label>
+            <select id="family" class="form-control" disabled>
+                <option value="">ابتدا کارخانه را انتخاب کنید</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="modelSelect">مدل خودرو *</label>
+            <select id="model" class="form-control" disabled>
+                <option value="">ابتدا خانواده را انتخاب کنید</option>
+            </select>
+        </div>
+    </div>
+    <input asp-for="CarModelManufacturer" type="hidden" id="selectedManufacturer" />
+    <input asp-for="CarModelFamily" type="hidden" id="selectedFamily" />
+    <input asp-for="CarModelName" type="hidden" id="selectedModelName" />
+
+    <span asp-validation-for="CarModelManufacturer" class="text-danger"></span>
+    <span asp-validation-for="CarModelFamily" class="text-danger"></span>
+    <span asp-validation-for="CarModelName" class="text-danger"></span>
+</div>
+
+<!-- Upload image-->
+<div class="form-section upload-section">
+    <h2 class="section-title">بارگذاری تصاویر </h2>
+    <div class="upload-grid">
+        <div class="upload-box">
+            <input type="file" name="Images" accept="image/*" class="image-input">
+            <img class="preview" alt="کارت ملی"/>
+            <div class="upload-text">
+                <strong>تصویر کارت ملی</strong><br>
+                کلیک کنید یا فایل را بکشید
+            </div>
+        </div>
+        <div class="upload-box">
+            <input type="file" name="Images" accept="image/*" class="image-input">
+            <img class="preview" alt="کارت خودرو"/>
+            <div class="upload-text">
+                <strong>تصویر کارت خودرو</strong><br>
+                کلیک کنید یا فایل را بکشید
+            </div>
+        </div>
+        <div class="upload-box">
+            <input type="file" name="Images" accept="image/*" class="image-input">
+            <img class="preview" alt="خودرو"/>
+            <div class="upload-text">
+                <strong>تصویر خودرو</strong><br>
+                کلیک کنید یا فایل را بکشید
+            </div>
+        </div>
+    </div>
+    <span asp-validation-for="Images" class="text-danger"></span>
+</div>
+
+
+<!-- Calendar Section -->
+    <div class="calendar-section">
+        <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>انتخاب تاریخ مراجعه</span>
+        </div>
+        <div class="calendar-container">
+            <table class="calendar-table">
+                <span asp-validation-for="InspectionDate" class="text-danger"></span>
+                <thead>
+                    <tr>
+                        <th>شنبه</th>
+                        <th>یکشنبه</th>
+                        <th>دوشنبه</th>
+                        <th>سه‌شنبه</th>
+                        <th>چهارشنبه</th>
+                        <th>پنجشنبه</th>
+                        <th>جمعه</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody">
+                    @foreach (var week in (List<List<CalendarDayDataDTO>>)ViewData["ReservationsCalendar"])
+                    {
+                        <tr>
+                            @foreach (var day in week)
+                            {
+                                if (day.IsEmpty)
+                                {
+                                    <td class="empty"></td>
+                                }
+                                else
+                                {
+                                    if (day.IsAvailable)
+                                    {
+                                        <td data-value="@day.DateValue">
+                                            <div class="day-content">
+                                                <div class="day-number">@ConvertToPersianNumbers(day.ShamsiDate)</div>
+                                                <div class="day-info">
+                                                    <div class="available-slots">@ConvertToPersianNumbers(day.Message)</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="past">
+                                            <div class="day-content">
+                                                <div class="day-number">@ConvertToPersianNumbers(day.ShamsiDate)</div>
+                                                <div class="day-info">@ConvertToPersianNumbers(day.Message)</div>
+                                            </div>
+                                        </td>
+                                    }
+                                }
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <p>* در روزهای زوج فقط خودرو های ایران خودرو و در روز های فرد فقط خودرو های سایپا پذیرش میشود.</p>
+        </div>
+        <input asp-for="InspectionDate" type="hidden" id="InspectionDate" />
+    </div>
+
+    <!-- Buttons -->
+    <div class="button-container">
+        <button type="submit" class="btn-reserve">✓ رزرو نوبت</button>
+    </div>
+</form>
+</div>
+<div id="carModelsData" data-car-models='@Html.Raw(Json.Serialize((List<CarModelDTO>)@ViewData["CarModel"]))'></div>
+<script src="~/js/CarModelSelection.js"></script>
+<script src="~/js/CalendarSelection.js"></script>
+<script src="~/js/ImagePreview.js"></script>
+</body>

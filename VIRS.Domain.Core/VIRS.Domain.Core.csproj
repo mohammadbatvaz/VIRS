@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="CarAgg\Contracts\AppServices\" />
+    <Folder Include="CarAgg\Enums\" />
+    <Folder Include="CarModelAgg\Enums\" />
+    <Folder Include="CarOwnerAgg\Contracts\AppServices\" />
+    <Folder Include="CarOwnerAgg\Enums\" />
+    <Folder Include="SystemAdminAgg\Enums\" />
+  </ItemGroup>
+
+</Project>

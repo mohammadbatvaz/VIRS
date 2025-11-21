@@ -1,0 +1,148 @@
+﻿@using VIRS.Domain.Core.InspectionRequestAgg.DTOs
+@using VIRS.Domain.Core.InspectionRequestAgg.Enums
+@{
+    var total = ViewData["TotalNumberOfRequests"].ToString();
+    var rejected = ViewData["NumberOfRejectedRequests"].ToString();
+    var approved = ViewData["NumberOfApprovedRequests"].ToString();
+    var pending = ViewData["NumberOfPendingRequests"].ToString();
+    string ConvertToPersianNumbers(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        var persianDigits = new[] { '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' };
+        return string.Concat(input.Select(c => char.IsDigit(c) ? persianDigits[c - '0'] : c));
+    }
+    Layout = "_Layout";
+}
+<body style="background: #f5f7fa; padding: 0;">
+<div class="admin-header">
+    <div class="admin-logo">
+        <div>پنل مدیریت VIRS</div>
+    </div>
+    <div class="admin-user">
+        <div>
+            <div style="font-weight: bold;">@ViewData["FullName"]</div>
+        </div>
+        <a asp-controller="Panel" asp-action="Logout">
+            <button class="btn-logout">خروج</button>
+        </a>
+    </div>
+</div>
+
+<div class="admin-container">
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon pending">⏳</div>
+            <div class="stat-content">
+                <div class="stat-label">در انتظار تأیید</div>
+                    <div class="stat-value">@ConvertToPersianNumbers(pending)</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon approved">✓</div>
+            <div class="stat-content">
+                <div class="stat-label">تأیید شده</div>
+                    <div class="stat-value">@ConvertToPersianNumbers(approved)</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon rejected">✗</div>
+            <div class="stat-content">
+                <div class="stat-label">رد شده</div>
+                    <div class="stat-value">@ConvertToPersianNumbers(rejected)</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon total">📊</div>
+            <div class="stat-content">
+                <div class="stat-label">کل درخواست‌ها</div>
+                    <div class="stat-value">@ConvertToPersianNumbers(total)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Requests Panel -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <h2 class="panel-title">لیست درخواست‌های رزرو</h2>
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterRequests('all')">همه</button>
+                <button class="filter-tab" onclick="filterRequests('pending')">در انتظار</button>
+                <button class="filter-tab" onclick="filterRequests('approved')">تأیید شده</button>
+                <button class="filter-tab" onclick="filterRequests('rejected')">رد شده</button>
+            </div>
+        </div>
+
+        <div class="requests-list">
+            @foreach (var day in (List<ListOfRequestInDayDTO>)ViewData["ListOfAllRequests"])
+            {
+                    <div class="date-group">@ConvertToPersianNumbers(day.ShamsiDate)</div>
+
+                <table class="requests-table">
+                    <thead>
+                    <tr>
+                        <th>کد پیگیری</th>
+                        <th>نام و نام خانوادگی</th>
+                        <th>پلاک خودرو</th>
+                        <th>مدل خودرو</th>
+                        <th>وضعیت</th>
+                        <th>عملیات</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var r in day.RequestList)
+                    {
+                        <tr>
+                            <td><strong>@r.TrackingNumber</strong></td>
+                            <td>@r.FullName</td>
+                                    <td>@ConvertToPersianNumbers(r.CarPlat)</td>
+                            <td>@r.CarModel</td>
+                            <td>
+                                @switch (r.Status)
+                                {
+                                    case InspectionStatusEnum.Confirmed:
+                                        <span class="status-badge approved">تأیید شده</span>
+                                        break;
+                                    case InspectionStatusEnum.Pending:
+                                        <span class="status-badge pending">در انتظار</span>
+                                        break;
+                                    case InspectionStatusEnum.Rejected:
+                                        <span class="status-badge rejected">رد شده</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-controller="Panel"
+                                       asp-action="Information"
+                                       asp-route-id="@r.TrackingNumber"
+                                       class="btn-view"
+                                       style="text-decoration: none;">مشاهده</a>
+
+                                    @if (r.Status == InspectionStatusEnum.Pending)
+                                    { 
+                                        <a asp-controller="Panel"
+                                           asp-action="Approved"
+                                           asp-route-id="@r.TrackingNumber">
+                                            <button class="btn-approve">✓</button>
+                                        </a> 
+                                        <a asp-controller="Panel"
+                                           asp-action="Rejected"
+                                           asp-route-id="@r.TrackingNumber">
+                                            <button class="btn-reject">✗</button>
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+</body>
