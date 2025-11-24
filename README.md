@@ -5,6 +5,8 @@ Vehicle Inspection Request System (VIRS) — an example ASP.NET Core project wit
 ## Overview
 VIRS is an educational/example project that demonstrates a layered architecture and domain separation in an ASP.NET Core application. It follows domain-driven principles and separates responsibilities across distinct projects for domain models, application services, domain services, infrastructure (data access and storage), and a presentation layer (MVC).
 
+![My Image](Untitled-1.png)
+
 The system models concepts such as car models, car owners, images, and inspection requests and provides the foundation for managing related operations.
 
 ## Key Features
